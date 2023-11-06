@@ -1,11 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, TouchableWithoutFeedback, ImageBackground } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import SlideMovie from './SlideMovie'
+import Event from './Event'
 
-const Home = () => {
+const Home = ({route, navigation}) => {
+  const [userID, setUserID] = useState(route.params.userID)
+
   return (
-    <View>
-      <Text>Home</Text>
-    </View>
+    <ImageBackground source={require('../../assets/imgBackground/sky-star.jpg')} 
+    style={{width : '100%', height : '100%'}}>
+      <Event navigation={navigation}/>
+      <SlideMovie navigation={navigation} userID={userID}/>
+    </ImageBackground>
   )
 }
 
