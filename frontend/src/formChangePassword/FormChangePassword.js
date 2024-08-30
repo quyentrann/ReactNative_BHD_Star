@@ -15,9 +15,9 @@ const FormChangePassword = ({ route, navigation }) => {
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [againNewPassword, setAgainNewPassword] = useState("");
-  const [eyePassword, setEyePassword] = useState(false);
-  const [eyeNewPassword, setEyeNewPassword] = useState(false);
-  const [eyeAgainNewPassword, setEyeAgainNewPassword] = useState(false);
+  const [eyePassword, setEyePassword] = useState(true);
+  const [eyeNewPassword, setEyeNewPassword] = useState(true);
+  const [eyeAgainNewPassword, setEyeAgainNewPassword] = useState(true);
 
   let handlePressChangePassword = async () => {
     let data = await axios.post(

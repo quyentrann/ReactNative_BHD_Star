@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import FontAwesome from "@expo/vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import axios from "axios";
+import Toast from "react-native-toast-message";
 
 const ChooseSeats = ({ navigation, route }) => {
   const [nameCinema, setNameCinema] = useState("");
@@ -59,20 +60,20 @@ const ChooseSeats = ({ navigation, route }) => {
   const [pricesOfSeats, setPricesOfSeats] = useState(0);
 
   useEffect(() => {
-    let apiGetSeatsOrdered = async() => {
+    let apiGetSeatsOrdered = async () => {
       let data = await axios.post(
         "http://10.0.2.2:8080/api/seat/get-seats-ordered",
         {
-          movieID : route.params.movie.movieID,
-          cinemaID : route.params.cinema.cinemaID,
-          movieDateID : route.params.date.movieDateID,
-          showTimeID : route.params.showTimeID
+          movieID: route.params.movie.movieID,
+          cinemaID: route.params.cinema.cinemaID,
+          movieDateID: route.params.date.movieDateID,
+          showTimeID: route.params.showTimeID,
         }
       );
       setSeatsOrdered(data.data.seatsOrdered);
-    }
-    apiGetSeatsOrdered()
-  }, [])
+    };
+    apiGetSeatsOrdered();
+  }, []);
 
   useEffect(() => {
     setNameCinema(route.params.cinema.name);
@@ -101,7 +102,7 @@ const ChooseSeats = ({ navigation, route }) => {
   }, [route.params]);
 
   let handlePressSeat = async (seat) => {
-    if(!seatsOrdered.includes(seat)){
+    if (!seatsOrdered.includes(seat)) {
       if (seatsChosen.includes(seat)) {
         setSeatsChosen((prevSeats) =>
           prevSeats.filter((seatChosen) => seatChosen !== seat)
@@ -125,20 +126,29 @@ const ChooseSeats = ({ navigation, route }) => {
   };
 
   let handlePressFinishPayment = () => {
-    navigation.navigate("Concession", {
-      nameCinema: nameCinema,
-      date: date,
-      time: time,
-      quality: route.params.quality,
-      seatsChosen: seatsChosen,
-      pricesOfSeats: pricesOfSeats,
-      imageMovie: route.params.imageMovie,
-      movieID: route.params.movie.movieID,
-      cinemaID: route.params.cinema.cinemaID,
-      movieDateID: route.params.date.movieDateID,
-      showTimeID: route.params.showTimeID,
-      userID : route.params.userID
-    });
+    if (seatsChosen.length > 0) {
+      navigation.navigate("Concession", {
+        nameCinema: nameCinema,
+        date: date,
+        time: time,
+        quality: route.params.quality,
+        seatsChosen: seatsChosen,
+        pricesOfSeats: pricesOfSeats,
+        imageMovie: route.params.imageMovie,
+        movieID: route.params.movie.movieID,
+        cinemaID: route.params.cinema.cinemaID,
+        movieDateID: route.params.date.movieDateID,
+        showTimeID: route.params.showTimeID,
+        userID: route.params.userID,
+      });
+    }
+    else{
+      Toast.show({
+        type: "error",
+        text1: "Vui Lòng Chọn Ghế Ngồi!!!",
+        text2: "Tối Thiểu Chọn 1 Ghế Ngồi👋",
+      });
+    }
   };
 
   return (
@@ -249,10 +259,10 @@ const ChooseSeats = ({ navigation, route }) => {
                       size={20}
                       color={
                         seatsOrdered.includes(seat)
-                        ? "rgba(233,77,80,1)"
-                        : seatsChosen.includes(seat)
-                        ? "rgba(89,178,42,1)"
-                        : "rgba(74,74,72,1)"
+                          ? "rgba(233,77,80,1)"
+                          : seatsChosen.includes(seat)
+                          ? "rgba(89,178,42,1)"
+                          : "rgba(74,74,72,1)"
                       }
                       onPress={() => handlePressSeat(seat)}
                     />
@@ -269,12 +279,12 @@ const ChooseSeats = ({ navigation, route }) => {
                       key={seat}
                       name="couch"
                       size={20}
-                      ccolor={
+                      color={
                         seatsOrdered.includes(seat)
-                        ? "rgba(233,77,80,1)"
-                        : seatsChosen.includes(seat)
-                        ? "rgba(89,178,42,1)"
-                        : "rgba(74,74,72,1)"
+                          ? "rgba(233,77,80,1)"
+                          : seatsChosen.includes(seat)
+                          ? "rgba(89,178,42,1)"
+                          : "rgba(74,74,72,1)"
                       }
                       onPress={() => handlePressSeat(seat)}
                     />
@@ -293,10 +303,10 @@ const ChooseSeats = ({ navigation, route }) => {
                       size={20}
                       color={
                         seatsOrdered.includes(seat)
-                        ? "rgba(233,77,80,1)"
-                        : seatsChosen.includes(seat)
-                        ? "rgba(89,178,42,1)"
-                        : "rgba(74,74,72,1)"
+                          ? "rgba(233,77,80,1)"
+                          : seatsChosen.includes(seat)
+                          ? "rgba(89,178,42,1)"
+                          : "rgba(74,74,72,1)"
                       }
                       onPress={() => handlePressSeat(seat)}
                     />

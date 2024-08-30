@@ -294,6 +294,21 @@ let apiGetListMovie = () => {
   });
 };
 
+let apiGetAllMovie = () => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // let userID = await sequelize.query(`SELECT id FROM users ORDER BY id DESC LIMIT 1`, {type : QueryTypes.SELECT})
+      let movies = await db.Movie.findAll({
+        attributes: ["movieID", "nameEN", "nameVN", "time", "actor", "director", "producer", "category", "premiereDate", "image", "contentFilm"],
+        order: [["movieID", "DESC"]],
+      });
+      resolve(movies ? movies : []);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
 let apiGetAllShowTimeByMovieDateID = (id) => {
   return new Promise(async (resolve, reject) => {
     try {
@@ -1819,6 +1834,7 @@ module.exports = {
 
   // API GET
   apiGetListCinema,
+  apiGetAllMovie,
   apiGetListMovie,
   apiGetAllShowTimeByMovieDateID,
   apiGetSeatsChosen,

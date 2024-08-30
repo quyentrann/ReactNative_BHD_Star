@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableWithoutFeedback, ImageBackground } from 'react-native'
+import { StyleSheet, ImageBackground } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import SlideMovie from './SlideMovie'
 import Event from './Event'

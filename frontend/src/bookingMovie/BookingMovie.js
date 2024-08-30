@@ -86,7 +86,7 @@ const BookingMovie = ({ navigation, route }) => {
         setShowTime(JSON.parse(value[0].showtimes.replace(/'/g, "\"")))
       }
     })
-  }, [...isPressSeenShowTime.isPress])
+  }, [JSON.stringify(isPressSeenShowTime.isPress)])
 
   useEffect(() => {
     let apiGetShowTimeMovie = async () => {
@@ -221,7 +221,7 @@ const BookingMovie = ({ navigation, route }) => {
           </View>
           <View style={styles.viewPlace}>
             {movies.places.map((place, index) => (
-              <TouchableWithoutFeedback onPress={() => setPlaceChosen(place)}>
+              <TouchableWithoutFeedback key={index} onPress={() => setPlaceChosen(place)}>
                 <View>
                   <Text key={index} style={styles.textPlace}>
                     {place}

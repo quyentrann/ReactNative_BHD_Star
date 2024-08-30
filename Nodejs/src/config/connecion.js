@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 
 // Option 3: Passing parameters separately (other dialects)
-const sequelize = new Sequelize('databasecinema', 'root', "sapassword", {
+const sequelize = new Sequelize('databasecinema', 'root', "sa123", {
   host: 'localhost',
   dialect: 'mariadb',
   logging: false

@@ -1,5 +1,115 @@
 import service from '../services/service'
 
+let apiPaymentMomo = async(req, res) => {
+    //https://developers.momo.vn/#/docs/en/aiov2/?id=payment-method
+    //parameters
+    var accessKey = "F8BBA842ECF85";
+    var secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
+    var orderInfo = "pay with MoMo";
+    var partnerCode = "MOMO";
+    var redirectUrl =
+      "exp://192.168.1.15:8081";
+    var ipnUrl = "exp://192.168.1.15:8081";
+    var requestType = "payWithMethod";
+    var amount = req.body.amount;
+    var orderId = partnerCode + new Date().getTime();
+    var requestId = orderId;
+    var extraData = "";
+    var orderGroupId = "";
+    var autoCapture = true;
+    var lang = "vi";
+
+    //before sign HMAC SHA256 with format
+    //accessKey=$accessKey&amount=$amount&extraData=$extraData&ipnUrl=$ipnUrl&orderId=$orderId&orderInfo=$orderInfo&partnerCode=$partnerCode&redirectUrl=$redirectUrl&requestId=$requestId&requestType=$requestType
+    var rawSignature =
+      "accessKey=" +
+      accessKey +
+      "&amount=" +
+      amount +
+      "&extraData=" +
+      extraData +
+      "&ipnUrl=" +
+      ipnUrl +
+      "&orderId=" +
+      orderId +
+      "&orderInfo=" +
+      orderInfo +
+      "&partnerCode=" +
+      partnerCode +
+      "&redirectUrl=" +
+      redirectUrl +
+      "&requestId=" +
+      requestId +
+      "&requestType=" +
+      requestType;
+    //puts raw signature
+    console.log("--------------------RAW SIGNATURE----------------");
+    console.log(rawSignature);
+    //signature
+    const crypto = require("crypto");
+    var signature = crypto
+      .createHmac("sha256", secretKey)
+      .update(rawSignature)
+      .digest("hex");
+    console.log("--------------------SIGNATURE----------------");
+    console.log(signature);
+
+    //json object send to MoMo endpoint
+    const requestBody = JSON.stringify({
+      partnerCode: partnerCode,
+      partnerName: "Test",
+      storeId: "MomoTestStore",
+      requestId: requestId,
+      amount: amount,
+      orderId: orderId,
+      orderInfo: orderInfo,
+      redirectUrl: redirectUrl,
+      ipnUrl: ipnUrl,
+      lang: lang,
+      requestType: requestType,
+      autoCapture: autoCapture,
+      extraData: extraData,
+      orderGroupId: orderGroupId,
+      signature: signature,
+    });
+    //Create the HTTPS objects
+    const https = require("https");
+    const options = {
+      hostname: "test-payment.momo.vn",
+      port: 443,
+      path: "/v2/gateway/api/create",
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Content-Length": Buffer.byteLength(requestBody),
+      },
+    };
+    //Send the request and get the response
+    const reqq = https.request(options, (ress) => {
+      console.log(`Status: ${res.statusCode}`);
+      console.log(`Headers: ${JSON.stringify(ress.headers)}`);
+      ress.setEncoding("utf8");
+      ress.on("data", (body) => {
+        console.log("Body: ");
+        console.log(body);
+        console.log("resultCode: ");
+        console.log(JSON.parse(body).resultCode);
+        return res.status(200).json(body)
+      });
+      ress.on("end", () => {
+        console.log("No more data in response.");
+      });
+    });
+
+    reqq.on("error", (e) => {
+      console.log(`problem with request: ${e.message}`);
+    });
+    // write data to request body
+    console.log("Sending....");
+    reqq.write(requestBody);
+    reqq.end();
+}
+
 // API POST
 let apiPostInsertAccount = async(req, res) => {
     let data = await service.apiPostInsertAccount(req.body)
@@ -56,6 +166,13 @@ let apiGetListCinema = async(req, res) => {
 
 let apiGetListMovie = async(req, res) => {
     let movies = await service.apiGetListMovie()
+    return res.status(200).json({
+        movies : movies
+    })
+}
+
+let apiGetAllMovie = async(req, res) => {
+    let movies = await service.apiGetAllMovie()
     return res.status(200).json({
         movies : movies
     })
@@ -454,6 +571,8 @@ let apiDeleteFareByID = async(req, res) => {
 }
 
 module.exports = {
+    apiPaymentMomo,
+
     // API POST
     apiPostInsertUser,
     apiPostInsertMovie,
@@ -466,6 +585,7 @@ module.exports = {
     apiPostInsertAccount,
     //API GET
     apiGetListCinema,
+    apiGetAllMovie,
     apiGetListMovie,
     apiGetAllShowTimeByMovieDateID,
     apiGetSeatsChosen,

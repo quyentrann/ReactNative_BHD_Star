@@ -73,8 +73,8 @@ const Personal = ({ route, navigation }) => {
         <Text style={styles.txtNameUser}>{user.name}</Text>
       </View>
       <View style={styles.viewInforUser}>
-        {featureUsers.map((f) => (
-          <TouchableOpacity onPress={() => handlePressInfoUser(f)}>
+        {featureUsers.map((f, index) => (
+          <TouchableOpacity key={index} onPress={() => handlePressInfoUser(f)}>
             <View key={f.name} style={styles.viewContainerInfo}>
               <View style={styles.viewContentInfo}>
                 <Ionicons
@@ -127,8 +127,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    // borderWidth : 1,
-    // borderColor  :'red'
+
   },
   txtNameUser: {
     position: "absolute",
@@ -146,8 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 10,
-    // borderWidth : 1,
-    // borderColor  :'red'
+
   },
   viewContainerInfo: {
     width: "100%",

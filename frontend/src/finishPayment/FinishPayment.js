@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   TouchableWithoutFeedback,
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -21,6 +22,14 @@ const FinishPayment = ({ navigation, route }) => {
   let handlePressFinishPayment = async () => {
     if (checked !== "") {
       if (boxChecked) {
+        let dt = await axios.post("http://10.0.2.2:8080/api/payment-momo", {
+          amount:
+            route.params.pricesOfSeats +
+            route.params.concession.reduce((total, c2, index) => {
+              return total + c2.prices * route.params.quantityConcession[index];
+            }, 0),
+        });
+        Linking.openURL(JSON.parse(dt.data).payUrl);
         let dataID = await axios.get(
           "http://10.0.2.2:8080/api/ticket/get-ticketID"
         );
@@ -42,7 +51,7 @@ const FinishPayment = ({ navigation, route }) => {
             movie: route.params.movieID,
             movieDate: route.params.movieDateID,
             showTime: route.params.showTimeID,
-            userID : route.params.userID
+            userID: route.params.userID,
           }
         );
         Toast.show({
@@ -171,6 +180,7 @@ const FinishPayment = ({ navigation, route }) => {
             if (quantity > 0) {
               return (
                 <View
+                  key={index}
                   style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
@@ -236,7 +246,7 @@ const FinishPayment = ({ navigation, route }) => {
                   marginTop: 10,
                 }}
               >
-                Thanh Toán Trực Tiếp
+                Thanh Toán Momo
               </Text>
               <RadioButton
                 value="inPerson"
